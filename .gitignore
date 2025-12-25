@@ -2,3 +2,7 @@
 .env
 .venv/
 .idea/
+
+known_releases.json
+venv/
+__pycache__/
