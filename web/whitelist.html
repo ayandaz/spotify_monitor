@@ -14,6 +14,9 @@
 
 <hr>
 
+<button class="primary" onclick="checkNow()">Check Now</button>
+<p id="check-status"></p>
+
 <!-- Add albums -->
 <h2>Add Albums to Whitelist</h2>
 
@@ -44,7 +47,7 @@ async function loadAlbums() {
       <strong>${a.name}</strong>
       <small>${a.release_date}</small>
       <a href="${a.spotify_url}" target="_blank">Listen</a>
-      <button class="delete-btn" onclick="deleteAlbum('${a.id}')">🗑 Delete</button>
+      <button class="delete-btn" onclick="deleteAlbum('${a.id}')">Delete</button>
     `;
     container.appendChild(div);
   });
@@ -100,6 +103,24 @@ async function deleteAlbum(id) {
   });
 
   loadAlbums();
+}
+
+async function checkNow() {
+  const status = document.getElementById("check-status");
+  status.textContent = "Checking Spotify…";
+
+  try {
+    const res = await fetch("/api/monitor");
+    const data = await res.json();
+
+    if (res.ok) {
+      status.textContent = `Checked. Alerts sent: ${data.alerts_sent}`;
+    } else {
+      status.textContent = "Monitor failed";
+    }
+  } catch (e) {
+    status.textContent = "Error calling monitor";
+  }
 }
 
 loadAlbums();
