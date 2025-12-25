@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spotify Known Releases</title>
+<style>
+body { font-family: sans-serif; margin: 40px; }
+input, button { font-size: 1em; padding: 5px; margin-bottom: 5px; }
+#results { margin-top: 20px; }
+.field-wrapper { display: flex; gap: 10px; margin-bottom: 5px; }
+</style>
+</head>
+<body>
+<h1>Add Spotify Albums to Known Releases</h1>
+
+<div id="fields-container">
+  <div class="field-wrapper">
+    <input type="text" placeholder="Enter album ID" class="album-field">
+    <button type="button" onclick="addField()">+</button>
+  </div>
+</div>
+
+<button onclick="submitAlbums()">Submit</button>
+
+<div id="results"></div>
+
+<script>
+function addField() {
+    const container = document.getElementById("fields-container");
+    const wrapper = document.createElement("div");
+    wrapper.className = "field-wrapper";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Enter album ID";
+    input.className = "album-field";
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "−";
+    removeBtn.onclick = () => wrapper.remove();
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(removeBtn);
+    container.appendChild(wrapper);
+}
+
+async function submitAlbums() {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    const inputs = document.querySelectorAll(".album-field");
+    const ids = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+
+    for (const id of ids) {
+        try {
+            const res = await fetch(`/api/add_known?album_id=${id}`);
+            const data = await res.json();
+            if (res.ok) {
+                resultsDiv.innerHTML += `<p style="color:green;">✅ ${data.message}</p>`;
+            } else {
+                resultsDiv.innerHTML += `<p style="color:red;">❌ ${data.error}</p>`;
+            }
+        } catch (e) {
+            resultsDiv.innerHTML += `<p style="color:red;">❌ Error adding ${id}: ${e}</p>`;
+        }
+    }
+}
+</script>
+</body>
+</html>
