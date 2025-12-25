@@ -3,7 +3,7 @@ import json
 from http.server import BaseHTTPRequestHandler
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from twilio.rest import Client
+import requests
 from utils.kv_helpers import get_known
 
 ARTIST_ID = os.environ.get("SPOTIFY_ARTIST_ID")
@@ -17,12 +17,6 @@ class handler(BaseHTTPRequestHandler):
                     client_id=os.environ["SPOTIFY_CLIENT_ID"],
                     client_secret=os.environ["SPOTIFY_CLIENT_SECRET"]
                 )
-            )
-
-            # Twilio client
-            twilio = Client(
-                os.environ["TWILIO_ACCOUNT_SID"],
-                os.environ["TWILIO_AUTH_TOKEN"]
             )
 
             known = get_known()
@@ -46,11 +40,12 @@ class handler(BaseHTTPRequestHandler):
 
             if alerts:
                 for msg in alerts:
-                    twilio.messages.create(
-                        from_="whatsapp:+14155238886",
-                        to=os.environ["TO_WHATSAPP"],
-                        body=msg
-                    )
+                    telegram_url = f"https://api.telegram.org/bot{os.environ['TELEGRAM_BOT_TOKEN']}/sendMessage"
+                    requests.post(telegram_url, data={
+                        "chat_id": os.environ["TELEGRAM_CHAT_ID"],
+                        "text": msg,
+                        "parse_mode": "Markdown"
+                    })
 
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -64,7 +59,6 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
 
     def do_POST(self):
-        # Optional: return 405 for POST
         self.send_response(405)
         self.send_header("Content-Type", "application/json")
         self.end_headers()
