@@ -2,29 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Spotify Known Releases</title>
+<title>Spotify Monitor</title>
 <style>
 body { font-family: sans-serif; margin: 40px; }
-input, button { font-size: 1em; padding: 5px; margin-bottom: 5px; }
-#results { margin-top: 20px; }
+h1 { margin-bottom: 20px; }
+.album-grid { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+.album { width: 200px; text-align: center; }
+.album img { width: 180px; height: 180px; object-fit: cover; }
 .field-wrapper { display: flex; gap: 10px; margin-bottom: 5px; }
+input, button { font-size: 1em; padding: 5px; }
 </style>
 </head>
 <body>
-<h1>Add Spotify Albums to Known Releases</h1>
 
+<h1>Spotify Monitor - Known Releases</h1>
+
+<!-- Dynamic album list -->
+<div class="album-grid" id="albums"></div>
+
+<!-- Manual whitelist management -->
+<h2>Add Albums to Whitelist</h2>
 <div id="fields-container">
   <div class="field-wrapper">
     <input type="text" placeholder="Enter album ID" class="album-field">
     <button type="button" onclick="addField()">+</button>
   </div>
 </div>
-
 <button onclick="submitAlbums()">Submit</button>
 
 <div id="results"></div>
 
 <script>
+// Fetch known albums from API and display
+async function loadAlbums() {
+    const container = document.getElementById("albums");
+    container.innerHTML = "";
+    const res = await fetch("/api/list_known");
+    const albums = await res.json();
+
+    albums.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "album";
+        div.innerHTML = `
+            <img src="${a.image}" alt="${a.name}">
+            <div><strong>${a.name}</strong></div>
+            <div><small>${a.release_date}</small></div>
+            <div><a href="${a.spotify_url}" target="_blank">Listen</a></div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Dynamic fields
 function addField() {
     const container = document.getElementById("fields-container");
     const wrapper = document.createElement("div");
@@ -45,6 +74,7 @@ function addField() {
     container.appendChild(wrapper);
 }
 
+// Submit new albums to add_known API
 async function submitAlbums() {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -63,16 +93,19 @@ async function submitAlbums() {
         const data = await res.json();
         if (res.ok) {
             resultsDiv.innerHTML = `<p style="color:green;">✅ ${data.message}</p>`;
-            data.albums.forEach(a => {
-                resultsDiv.innerHTML += `<p>${a}</p>`;
-            });
+            data.albums.forEach(a => resultsDiv.innerHTML += `<p>${a}</p>`);
         } else {
             resultsDiv.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
         }
     } catch (e) {
         resultsDiv.innerHTML = `<p style="color:red;">❌ Error: ${e}</p>`;
     }
+
+    loadAlbums(); // refresh album list after adding
 }
+
+// Initial load
+loadAlbums();
 </script>
 </body>
 </html>
