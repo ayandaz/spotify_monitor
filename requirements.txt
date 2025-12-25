@@ -1,3 +1,4 @@
 spotipy
 twilio
-vercel-kv
+requests
+redis
