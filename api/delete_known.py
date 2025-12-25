@@ -1,7 +1,4 @@
-import os
 import json
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 from utils.kv_helpers import get_known, set_known
 
 def handler(request):
@@ -21,35 +18,21 @@ def handler(request):
                 "body": json.dumps({"error": "No album_ids provided"})
             }
 
-        # Initialize Spotify client
-        sp = spotipy.Spotify(
-            auth_manager=SpotifyClientCredentials(
-                client_id=os.environ["SPOTIFY_CLIENT_ID"],
-                client_secret=os.environ["SPOTIFY_CLIENT_SECRET"]
-            )
-        )
-
         current_known = get_known()
-        added_albums = []
+        removed = []
 
         for album_id in album_ids:
             if album_id in current_known:
-                continue  # skip duplicates
-            try:
-                album = sp.album(album_id)
-                current_known.add(album_id)
-                added_albums.append(album["name"])
-            except spotipy.SpotifyException:
-                continue  # skip invalid IDs
+                current_known.remove(album_id)
+                removed.append(album_id)
 
-        # Save updated set back to Upstash Redis
         set_known(current_known)
 
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "message": f"Added {len(added_albums)} albums to known releases",
-                "albums": added_albums
+                "message": f"Removed {len(removed)} albums from known releases",
+                "removed_album_ids": removed
             })
         }
 

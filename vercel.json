@@ -7,7 +7,7 @@
   ],
   "rewrites": [
     {
-      "source": "/web",
+      "source": "/",
       "destination": "/web/whitelist.html"
     }
   ]

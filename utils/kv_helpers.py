@@ -2,23 +2,26 @@ import os
 import json
 import requests
 
-KV_BASE = "https://kv.vercel.io/v1/kv"
+REDIS_URL = os.environ["UPSTASH_REDIS_URL"]
+REDIS_TOKEN = os.environ["UPSTASH_REDIS_TOKEN"]
 KV_KEY = "known_releases"
-KV_TOKEN = os.environ.get("VERCEL_KV_TOKEN")  # Add in Vercel environment variables
+
+HEADERS = {
+    "Authorization": f"Bearer {REDIS_TOKEN}"
+}
 
 def get_known():
-    """Retrieve known album IDs from Vercel KV."""
-    headers = {"Authorization": f"Bearer {KV_TOKEN}"}
-    r = requests.get(f"{KV_BASE}/{KV_KEY}", headers=headers)
+    r = requests.get(f"{REDIS_URL}/get/{KV_KEY}", headers=HEADERS)
     if r.status_code == 200:
-        return set(json.loads(r.text))
+        result = r.json().get("result")
+        if result:
+            return set(json.loads(result))
     return set()
 
 def set_known(ids):
-    """Update known album IDs in Vercel KV."""
-    headers = {
-        "Authorization": f"Bearer {KV_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    r = requests.put(f"{KV_BASE}/{KV_KEY}", headers=headers, data=json.dumps(list(ids)))
+    payload = json.dumps(list(ids))
+    r = requests.post(
+        f"{REDIS_URL}/set/{KV_KEY}/{payload}",
+        headers=HEADERS
+    )
     return r.status_code == 200
