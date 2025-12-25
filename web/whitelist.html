@@ -52,18 +52,25 @@ async function submitAlbums() {
     const inputs = document.querySelectorAll(".album-field");
     const ids = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
 
-    for (const id of ids) {
-        try {
-            const res = await fetch(`/api/add_known?album_id=${id}`);
-            const data = await res.json();
-            if (res.ok) {
-                resultsDiv.innerHTML += `<p style="color:green;">✅ ${data.message}</p>`;
-            } else {
-                resultsDiv.innerHTML += `<p style="color:red;">❌ ${data.error}</p>`;
-            }
-        } catch (e) {
-            resultsDiv.innerHTML += `<p style="color:red;">❌ Error adding ${id}: ${e}</p>`;
+    if (!ids.length) return;
+
+    try {
+        const res = await fetch('/api/add_known', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ album_ids: ids })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            resultsDiv.innerHTML = `<p style="color:green;">✅ ${data.message}</p>`;
+            data.albums.forEach(a => {
+                resultsDiv.innerHTML += `<p>${a}</p>`;
+            });
+        } else {
+            resultsDiv.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
         }
+    } catch (e) {
+        resultsDiv.innerHTML = `<p style="color:red;">❌ Error: ${e}</p>`;
     }
 }
 </script>

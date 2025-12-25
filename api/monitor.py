@@ -3,13 +3,11 @@ import json
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from twilio.rest import Client
-from vercel_kv import kv
+from utils.kv_helpers import get_known  # import from utils
 
-ARTIST_ID = "69eRfY40RjSFrZOToECdiS"
-KV_KEY = "known_releases"
+ARTIST_ID = os.environ.get("SPOTIFY_ARTIST_ID")
 
 def handler(request):
-    # Spotify
     sp = spotipy.Spotify(
         auth_manager=SpotifyClientCredentials(
             client_id=os.environ["SPOTIFY_CLIENT_ID"],
@@ -17,13 +15,12 @@ def handler(request):
         )
     )
 
-    # Twilio
     twilio = Client(
         os.environ["TWILIO_ACCOUNT_SID"],
         os.environ["TWILIO_AUTH_TOKEN"]
     )
 
-    known = set(kv.get(KV_KEY) or [])
+    known = get_known()
 
     results = sp.artist_albums(
         ARTIST_ID,
@@ -31,13 +28,10 @@ def handler(request):
         limit=50
     )
 
-    current = set()
     alerts = []
 
     for album in results["items"]:
         album_id = album["id"]
-        current.add(album_id)
-
         if album_id not in known:
             alerts.append(
                 f"🚨 *NEW SPOTIFY RELEASE*\n\n"
@@ -53,8 +47,6 @@ def handler(request):
                 to=os.environ["TO_WHATSAPP"],
                 body=msg
             )
-
-    kv.set(KV_KEY, list(current))
 
     return {
         "statusCode": 200,

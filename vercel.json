@@ -4,5 +4,11 @@
       "path": "/api/monitor",
       "schedule": "30 9 * * *"
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/web",
+      "destination": "/web/whitelist.html"
+    }
   ]
 }
