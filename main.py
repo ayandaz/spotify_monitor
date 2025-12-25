@@ -18,6 +18,18 @@ TO_WHATSAPP = os.getenv("TO_WHATSAPP")
 FROM_WHATSAPP = "whatsapp:+14155238886"  # Twilio sandbox
 ARTIST_ID = "69eRfY40RjSFzOToECdiS"
 STATE_FILE = "known_releases.json"
+
+required = [
+    SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET,
+    TWILIO_ACCOUNT_SID,
+    TWILIO_AUTH_TOKEN,
+    TO_WHATSAPP
+]
+
+if not all(required):
+    raise RuntimeError("Missing one or more environment variables")
+
 # ==================
 
 sp = spotipy.Spotify(
@@ -47,19 +59,26 @@ results = sp.artist_albums(
     limit=50
 )
 
+albums = results["items"]
+
+while results["next"]:
+    results = sp.next(results)
+    albums.extend(results["items"])
+
+
 current = set()
 alerts = []
 
-for album in results["items"]:
+for album in albums:
     album_id = album["id"]
     current.add(album_id)
 
     if album_id not in known:
         alerts.append(
             f"🚨 *NEW SPOTIFY RELEASE*\n"
-            f"🎵 {album['name']}\n"
-            f"📅 {album['release_date']}\n"
-            f"🔗 {album['external_urls']['spotify']}"
+            f"{album['name']}\n"
+            f"{album['release_date']}\n"
+            f"{album['external_urls']['spotify']}"
         )
 
 if alerts:
