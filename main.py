@@ -16,7 +16,7 @@ TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TO_WHATSAPP = os.getenv("TO_WHATSAPP")
 
 FROM_WHATSAPP = "whatsapp:+14155238886"  # Twilio sandbox
-ARTIST_ID = "69eRfY40RjSFzOToECdiS"
+ARTIST_ID = "69eRfY40RjSFrZOToECdiS"
 STATE_FILE = "known_releases.json"
 
 required = [
@@ -75,7 +75,7 @@ for album in albums:
 
     if album_id not in known:
         alerts.append(
-            f"🚨 *NEW SPOTIFY RELEASE*\n"
+            f"SPOTIFY RELEASE ALERT*{album['id']}\n"
             f"{album['name']}\n"
             f"{album['release_date']}\n"
             f"{album['external_urls']['spotify']}"
