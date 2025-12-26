@@ -147,6 +147,23 @@ button.primary:hover {
   transform: scale(1.1);
 }
 
+.copied {
+  font-size: 0.75rem;
+  color: #1ed760;
+  opacity: 0;
+  transform: translateY(2px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* visible state */
+.copied.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ---------- Delete Button ---------- */
 .delete-btn {
   margin-top: 10px;

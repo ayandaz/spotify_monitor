@@ -184,7 +184,8 @@ async function checkNow() {
         <small>${a.release_date}</small>
         <div class="copy-row">
           <a href="${a.spotify_url}" target="_blank">Listen</a>
-          <span class="copy" onclick="copy('${a.spotify_url}')">🗐</span>
+          <span class="copy" onclick="copyToClipboard(this, 'SPOTIFY_URL')">🗐</span>
+          <span class="copied">Copied!</span>
         </div>
       `;
 
@@ -198,6 +199,22 @@ async function checkNow() {
 
 function copy(text) {
   navigator.clipboard.writeText(text);
+}
+
+async function copyToClipboard(el, text) {
+  try {
+    await navigator.clipboard.writeText(text);
+
+    const copied = el.nextElementSibling;
+    copied.classList.add("show");
+
+    setTimeout(() => {
+      copied.classList.remove("show");
+    }, 1200);
+
+  } catch (err) {
+    console.error("Copy failed", err);
+  }
 }
 
 
