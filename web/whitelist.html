@@ -179,7 +179,7 @@ async function checkNow() {
         <small>${a.release_date}</small>
         <div class="copy-row">
           <a href="${a.spotify_url}" target="_blank">Listen</a>
-          <span class="copy" onclick="copyToClipboard(this, 'SPOTIFY_URL')">🗐</span>
+          <span class="copy" onclick="copyToClipboard(this, ${a.spotify_url}")">🗐</span>
           <span class="copied">Copied!</span>
         </div>
       `;
