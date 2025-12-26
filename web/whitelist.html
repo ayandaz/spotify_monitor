@@ -7,13 +7,15 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header style="margin-bottom: 36px;">
-    <h1>Spotify Monitor</h1>
-    <p style="color:#9ca3af; margin-top:6px; font-size:0.95rem;">
-      Track unexpected releases under your artist profile
-    </p>
+  <header class="page-header">
+    <div>
+      <h1>Spotify Monitor</h1>
+      <p>
+        Detect and manage unrecognized releases under your artist profile
+      </p>
+    </div>
   </header>
+
 
   <!-- Known Releases -->
   <section class="card">
@@ -181,8 +183,8 @@ async function checkNow() {
         <strong>${a.name}</strong>
         <small>${a.release_date}</small>
         <div class="copy-row">
-          <a href="${a.spotify_url}" target="_blank">Open</a>
-          <span class="copy" onclick="copy('${a.spotify_url}')">📋</span>
+          <a href="${a.spotify_url}" target="_blank">Listen</a>
+          <span class="copy" onclick="copy('${a.spotify_url}')">🗐</span>
         </div>
       `;
 

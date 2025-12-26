@@ -137,13 +137,14 @@ button.primary:hover {
 
 .copy {
   cursor: pointer;
-  font-size: 0.85rem;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .copy:hover {
   opacity: 1;
+  transform: scale(1.1);
 }
 
 /* ---------- Delete Button ---------- */
@@ -236,4 +237,23 @@ input:focus {
 
 .links a:hover::after {
   width: 100%;
+}
+
+.page-header {
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-header h1 {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.page-header p {
+  margin-top: 8px;
+  max-width: 520px;
+  color: #9ca3af;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
