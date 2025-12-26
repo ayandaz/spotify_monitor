@@ -1,58 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Spotify Monitor</title>
-  <link rel="stylesheet" href="web/styles.css">
+  <link rel="stylesheet" href="web/styles.css" />
 </head>
 <body>
 
-<h1>Spotify Monitor – Known Releases</h1>
+  <!-- Header -->
+  <header style="margin-bottom: 36px;">
+    <h1>Spotify Monitor</h1>
+    <p style="color:#9ca3af; margin-top:6px; font-size:0.95rem;">
+      Track unexpected releases under your artist profile
+    </p>
+  </header>
 
-<!-- Album grid -->
-<div class="album-grid" id="albums"></div>
+  <!-- Known Releases -->
+  <section class="card">
+    <h2>Known Releases</h2>
+    <div class="album-grid" id="albums"></div>
+  </section>
 
-<hr>
+  <!-- Check Now / Unrecognized -->
+  <section class="card">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+      <h2 style="margin:0;">Unrecognized Releases</h2>
+      <button class="primary" onclick="checkNow()">Check Now</button>
+    </div>
 
-<button class="primary" onclick="checkNow()">Check Now</button>
-<p id="check-status"></p>
-<h2>Unrecognized Releases</h2>
-<div class="album-grid" id="check-results"></div>
+    <p id="check-status"></p>
 
+    <!-- Empty by default, populated after Check Now -->
+    <div
+      id="check-results"
+      class="album-grid"
+      style="margin-top:18px;"
+    ></div>
+  </section>
 
-<!-- Add albums -->
-<h2>Add Albums to Whitelist</h2>
+  <!-- Add Albums -->
+  <section class="card">
+    <h2>Add Albums to Whitelist</h2>
 
-<div id="fields-container">
-  <div class="field-wrapper">
-    <input type="text" placeholder="Enter album ID" class="album-field">
-    <button type="button" onclick="addField()">+</button>
-  </div>
-</div>
+    <div id="fields-container">
+      <div class="field-wrapper">
+        <input
+          type="text"
+          placeholder="Spotify album ID"
+          class="album-field"
+        />
+        <button type="button" onclick="addField()">+</button>
+      </div>
+    </div>
 
-<button class="primary" onclick="submitAlbums()">Submit</button>
+    <button class="primary" onclick="submitAlbums()">Submit</button>
+    <div id="results"></div>
+  </section>
 
-<div id="results"></div>
-<hr>
-<h2>Spotify Artist Links</h2>
+  <!-- Artist Links -->
+  <section class="card">
+    <h2>Spotify Artist Links</h2>
+    <div class="links">
+      <a
+        href="https://artists.spotify.com/c/artist/69eRfY40RjSFrZOToECdiS/home"
+        target="_blank"
+        rel="noopener"
+      >
+        Artist Home
+      </a>
 
-<div class="links">
-  <a
-    href="https://artists.spotify.com/c/artist/69eRfY40RjSFrZOToECdiS/home"
-    target="_blank"
-    rel="noopener"
-  >
-    Ayan Das
-  </a>
-
-  <a
-    href="https://artists.spotify.com/c/content-mismatch"
-    target="_blank"
-    rel="noopener"
-  >
-    Report Wrong Content
-  </a>
-</div>
+      <a
+        href="https://artists.spotify.com/c/content-mismatch"
+        target="_blank"
+        rel="noopener"
+      >
+        Report Wrong Content
+      </a>
+    </div>
+  </section>
 
 
 <script>
