@@ -37,6 +37,17 @@ hr {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;          /* keeps button close to heading */
+}
+
+.card-header h2 {
+  margin: 0;
+}
+
+
 /* ---------- Buttons ---------- */
 button {
   font-size: 0.95rem;
