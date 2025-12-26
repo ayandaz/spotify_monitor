@@ -16,6 +16,9 @@
 
 <button class="primary" onclick="checkNow()">Check Now</button>
 <p id="check-status"></p>
+<h2>Unrecognized Releases</h2>
+<div class="album-grid" id="check-results"></div>
+
 
 <!-- Add albums -->
 <h2>Add Albums to Whitelist</h2>
@@ -128,21 +131,48 @@ async function deleteAlbum(id) {
 
 async function checkNow() {
   const status = document.getElementById("check-status");
+  const container = document.getElementById("check-results");
+
   status.textContent = "Checking Spotify…";
+  container.innerHTML = "";
 
   try {
-    const res = await fetch("/api/monitor");
-    const data = await res.json();
+    const res = await fetch("/api/check_now");
+    const albums = await res.json();
 
-    if (res.ok) {
-      status.textContent = `Checked. Alerts sent: ${data.alerts_sent}`;
-    } else {
-      status.textContent = "Monitor failed";
+    if (!albums.length) {
+      status.textContent = "No unrecognized releases found";
+      return;
     }
+
+    status.textContent = `${albums.length} unrecognized releases`;
+
+    albums.forEach(a => {
+      const div = document.createElement("div");
+      div.className = "album";
+
+      div.innerHTML = `
+        <img src="${a.image}">
+        <strong>${a.name}</strong>
+        <small>${a.release_date}</small>
+        <div class="copy-row">
+          <a href="${a.spotify_url}" target="_blank">Open</a>
+          <span class="copy" onclick="copy('${a.spotify_url}')">📋</span>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
   } catch (e) {
-    status.textContent = "Error calling monitor";
+    status.textContent = "Error checking releases";
   }
 }
+
+function copy(text) {
+  navigator.clipboard.writeText(text);
+}
+
 
 loadAlbums();
 </script>
