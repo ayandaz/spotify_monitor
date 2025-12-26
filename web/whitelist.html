@@ -179,7 +179,7 @@ async function checkNow() {
         <small>${a.release_date}</small>
         <div class="copy-row">
           <a href="${a.spotify_url}" target="_blank">Listen</a>
-          <span class="copy" onclick="copyToClipboard(this, ${a.spotify_url})">🗐</span>
+          <span class="copy"  data-copy="${a.spotify_url}" onclick="copyToClipboard(this)">🗐</span>
           <span class="copied">Copied!</span>
         </div>
       `;
@@ -196,8 +196,9 @@ function copy(text) {
   navigator.clipboard.writeText(text);
 }
 
-async function copyToClipboard(el, text) {
+async function copyToClipboard(el) {
   try {
+    const text = el.dataset.copy;
     await navigator.clipboard.writeText(text);
 
     const copied = el.nextElementSibling;
