@@ -180,12 +180,13 @@ button.primary:hover {
 /* ---------- Add Album Fields ---------- */
 .field-wrapper {
   display: flex;
-  gap: 10px;
+  gap: 8px; /* a bit smaller gap */
   margin-bottom: 12px;
+  align-items: center; /* vertically center button */
 }
 
-input {
-  flex: 1;
+.field-wrapper input {
+  flex: 1 1 auto; /* grow but not push button too far */
   padding: 10px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -194,13 +195,15 @@ input {
   font-size: 0.95rem;
 }
 
-input::placeholder {
-  color: #6b7280;
-}
-
-input:focus {
-  outline: none;
-  border-color: #22c55e;
+.field-wrapper button {
+  flex: 0 0 auto; /* don't grow */
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1f222a;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 /* ---------- Status Messages ---------- */
